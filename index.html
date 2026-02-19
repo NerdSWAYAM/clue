@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Password Protected Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 25px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="password"] {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+    }
+
+    input[type="password"]:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+    }
+
+    button {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    #message {
+      text-align: center;
+      margin: 15px 0;
+      font-weight: 600;
+      min-height: 25px;
+    }
+
+    #message.error {
+      color: #e74c3c;
+      animation: shake 0.5s;
+    }
+
+    #message.success {
+      color: #27ae60;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    #protectedContent {
+      display: none;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 2px solid #eee;
+      animation: fadeIn 0.5s;
+    }
+
+    #protectedContent.show {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #protectedContent h3 {
+      color: #764ba2;
+      font-size: 18px;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    #protectedContent p {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .reset-btn {
+      background: #95a5a6;
+      padding: 8px 20px;
+      font-size: 14px;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .reset-btn:hover:not(:disabled) {
+      background: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔐 Access Restricted</h2>
+
+  <div class="input-group">
+    <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
+    <button id="submitBtn" onclick="checkPassword()">Submit</button>
+  </div>
+
+  <p id="message"></p>
+
+  <div id="protectedContent">
+    <h3>"Main garmiyon ka raja hoon, mera phal sabko pasand aata hai."</h3>
+    <p>🌟 The answer lies in the riddle above.</p>
+    <button class="reset-btn" onclick="resetForm()">Reset</button>
+  </div>
+</div>
+
+<script>
+  const CORRECT_PASSWORD = "T122";
+  const passwordInput = document.getElementById("passwordInput");
+  const submitBtn = document.getElementById("submitBtn");
+  const message = document.getElementById("message");
+  const protectedContent = document.getElementById("protectedContent");
+
+  // Allow Enter key to submit password
+  passwordInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      checkPassword();
+    }
+  });
+
+  function checkPassword() {
+    const password = passwordInput.value.trim();
+
+    // Validate input
+    if (!password) {
+      showMessage("⚠️ Please enter a password", "error");
+      return;
+    }
+
+    // Check password
+    if (password === CORRECT_PASSWORD) {
+      showMessage("✅ Access Granted!", "success");
+      protectedContent.classList.add("show");
+      passwordInput.disabled = true;
+      submitBtn.disabled = true;
+    } else {
+      showMessage("❌ Incorrect Password", "error");
+      passwordInput.value = "";
+      passwordInput.focus();
+    }
+  }
+
+  function showMessage(text, type) {
+    message.innerHTML = text;
+    message.className = type;
+  }
+
+  function resetForm() {
+    passwordInput.value = "";
+    passwordInput.disabled = false;
+    submitBtn.disabled = false;
+    message.innerHTML = "";
+    message.className = "";
+    protectedContent.classList.remove("show");
+    passwordInput.focus();
+  }
+
+  // Focus on input on page load
+  passwordInput.focus();
+</script>
+
+</body>
+</html>
